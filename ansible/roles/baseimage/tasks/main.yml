@@ -3,3 +3,22 @@
   yum: name={{ item }} state=installed
   with_items:
     - vim-enhanced
+    - screen
+    - nano
+    - mlocate
+    - git
+    - tree
+    - elinks
+    - rsync
+    - make
+    - nmap
+    - lsof
+    - which
+    - vixie-cron
+    - wget
+    - libselinux-python
+    - '@Core'
+    - '@Base'
+    - '@text-internet'
+    - '@system-tools'
+    
