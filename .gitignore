@@ -1,2 +1,4 @@
 output/
 _site/
+.vagrant/
+vagrant_ansible_inventory_*

@@ -1,0 +1,5 @@
+---
+- name: install packages loop
+  yum: name={{ item }} state=installed
+  with_items:
+    - vim-enhanced
