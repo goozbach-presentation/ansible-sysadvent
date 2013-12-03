@@ -1,0 +1,6 @@
+---
+- name: install packages loop
+  yum: name={{ item }} state=present
+  with_items:
+   - stow
+   - ack

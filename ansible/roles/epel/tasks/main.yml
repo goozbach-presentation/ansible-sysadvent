@@ -1,0 +1,5 @@
+---
+- name: install packages loop
+  yum: name={{ item }} state=present
+  with_items:
+   - http://dl.fedoraproject.org/pub/epel/{{ centvers }}/{{ ansible_architecture }}/{{ epel_packagename }}
