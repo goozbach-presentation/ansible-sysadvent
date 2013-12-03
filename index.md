@@ -5,27 +5,27 @@ subtitle: Infrastructure Made Easy
 footer: Derek Carter  
 subfooter: http://presentation.goozbach.com/  
 
-# Ansible: Infrastructure Managment Made Easy!
+# Ansible: Infrastructure Management Made Easy!
 ## What is Ansible?
-Ansible is most easliy described by calling it a "configuration management tool", but it is so much more.
+Ansible is most easily described by calling it a "configuration management tool", but it is so much more.
 
 Written in Python, with an easy to modify architecture, Ansible is built to do more than the common "configuration management" tasks.
 
 Out of the box, Ansible can be used to:
-- Do your normal config managment tasks:
+- Do your normal configuration management tasks:
     - Create system files via templates
     - Manage software installation using `yum`, `apt`, `gem`, or the like.
     - Manage services or daemons (eg. `start`, `stop`, `enable`, `disable`)
-- Do orchistration tasks such as:
-    - Remove servers from load balancers
+- Do orchestration tasks such as:
+    - Remove servers from load balance rs
     - Disable monitoring/alerting
     - Deploy your code via `git`
-- Continous integration tool
+- Continuous integration tool
     - Deploy code to QA servers
     - Run Tests
     - Promote software to production if tests pass
 
-Ansible is agentless.
+Ansible is agent less.
 It uses the (most likely already running) ssh server on the target.
 This access uses either the Python library `paramiko` (the default) or the stock `openssh` clients.
 
@@ -43,7 +43,7 @@ The Ansible __"Modules"__ are the workhorse of the system and do all the heavy l
 An Ansible __"Module"__ is most often a Python script, but it can be anything which prints JSON.
 
 # Getting Started
-## Prerequsites
+## Prerequisites
 The only things that a system needs to be managed via Ansible is the `python-simplejson` package, and a running OpenSSH server.
 Of course, if you properly setup ssh key-based authentication Ansible access becomes easier.
 Making sure you have proper DNS or host file setup is another way to make Ansible management easier.
@@ -54,7 +54,7 @@ After verifying that SSH access has properly been setup the first step is to cre
 The default inventory source is the file `/etc/ansible/hosts`, and is in the INI-file format.
 Groups are created using the INI group header syntax `[groupname]'.
 
-A simple hostfile example:
+A simple `host` file example:
 
         # ungrouped hosts
         host1.example.com
@@ -83,7 +83,7 @@ If you wanted to run the `ping` module against the database servers we previousl
 
         /usr/bin/ansible dbservers -m ping
 
-You can also use a wildcard style syntax to match hosts across groups.
+You can also use a wild card style syntax to match hosts across groups.
 For example:
 
         /usr/bin/ansible web*.example.com
@@ -99,7 +99,7 @@ Notice that it matches all hosts regardless of the group.
 When using the command `/usr/bin/ansible` you are operating Ansible in "Ad-Hoc" mode.
 This is how you run "one-off" modules or commands against Ansible nodes.
 
-One of the more useful thigs to run in ad-hoc mode is the `setup` module, which shows you the dynamically created variables which can be used in playbooks.
+One of the more useful things to run in ad-hoc mode is the `setup` module, which shows you the dynamically created variables which can be used in playbooks.
 
 This is what the setup module output looks like:
 
@@ -316,7 +316,7 @@ Although some tasks are more suited to a single type of usage they have quite a 
 ## application deployment tasks
 - git deploy
 - delegation
-## contious deployment tasks
+## continuous deployment tasks
 - change inventory source
 
 # intermediate playbooks
@@ -326,7 +326,7 @@ Although some tasks are more suited to a single type of usage they have quite a 
 
 # Advanced playbooks
 - roles
-    - used mostly for organiztation, but can be used for extensibility
+    - used mostly for organization, but can be used for extensible
 - accelerated mode
 
 # graduate-level study
