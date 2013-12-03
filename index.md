@@ -16,20 +16,30 @@ Out of the box, Ansible can be used to:
     - Create system files via templates
     - Manage software installation using `yum`, `apt`, `gem`, or the like.
     - Manage services or daemons (eg. `start`, `stop`, `enable`, `disable`)
-- Configuration management but so much more
-- Deployment tool
+- Do orchistration tasks such as:
+    - Remove servers from load balancers
+    - Disable monitoring/alerting
+    - Deploy your code via `git`
 - Continous integration tool
-- Agentless -- Uses ssh (paramiko or openssh-client)
-    - Nothing to set up (well apart from ssh host keys)
+    - Deploy code to QA servers
+    - Run Tests
+    - Promote software to production if tests pass
+
+Ansible is agentless.
+It uses the (most likely already running) ssh server on the target.
+This access uses either the Python library `paramiko` (the default) or the stock `openssh` clients.
+
+An optional connection method is the "Accelerated Mode", which uses an ssh connection to initialize a ZeroMQ connection.
 
 ## Ansible Architecture
-- inventory   - which systems are we managing
-    - Hosts
-    - dynamic host system
-- Playbooks   - Set of "plays" to apply
-    - Plays   - Group of related "tasks"
-    - Tasks   - list of "modules" to run
-    - Modules   - The workhorses of the Ansible system
+Ansible architecture is simple.
+An inventory source (by default an INI-style file) defines hosts and the groups they may belong to.
+You can also use a dynamic inventory script to provide hosts/groups from an external source.
+
+Ansible "Playbooks" are YAML formatted files which define "Plays".
+"Plays" are lists of "Tasks" which apply to hosts or host groups.
+"Tasks" define the Ansible "Modules" with the corresponding arguments to accomplish some purpose (eg template a file with the `template` module).
+The Ansible "Modules" are the workhorse of the system and do all the heavy lifting.
 
 # Getting Started
 ## Setup and prereqs
