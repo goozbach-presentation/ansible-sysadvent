@@ -9,20 +9,20 @@ subfooter: http://presentation.goozbach.com/
 ## What is Ansible?
 Ansible is most easily described by calling it a "configuration management tool", but it is so much more.
 
-Ansible, written in Python, has an easy to modify architecture, built to do more than the common "configuration management" tasks, and is highly extensible.
+Ansible, written in Python, has an extensible, easy to modify architecture, which is built to do more than the common "configuration management" tasks.
 
 Out of the box, Ansible has the following uses:
-- Do your normal configuration management tasks:
+- Normal configuration management tasks:
     - Create system files via templates
     - Manage software installation using `yum`, `apt`, `gem`, or the like.
     - Manage services or daemons (eg. `start`, `stop`, `enable`, `disable`)
-- Do orchestration tasks such as:
-    - Remove servers from load balance rs
+- Orchestration tasks:
+    - Remove servers from load balancers
     - Disable monitoring/alerting
     - Deploy your code via `git`
-- Continuous integration tool
+- Continuous integration:
     - Deploy code to QA servers
-    - Run Tests
+    - Run tests
     - Promote software to production if tests pass
 
 Ansible is agentless.
@@ -408,7 +408,7 @@ Some of the common tasks done in this work flow include:
         Please be kind
 
 ### Running tasks on changes
-  When you want to run a task when a template file changes or another task creates a change you use a `handler`:
+  If you want to run a task when a template file changes or another task creates a change, you use a `handler`:
 
         tasks:
           - name: template apache config
@@ -457,8 +457,9 @@ To run the same site-wide playbook against the development environment you would
         /usr/bin/ansible-playbook -i /etc/ansible/hosts-dev /etc/ansible/playbooks/site.yml
 
 # Advanced Playbook Syntax
-There are some advanced syntax options for tasks which allow for better control and administration
-### Tags
+There are some advanced syntax options for tasks which allow for better control and administration.
+
+## Tags
 Tags allow for selective execution of tasks.
 
         tasks:
@@ -479,16 +480,16 @@ To run just the motd tasks you would run `ansible-playbook` this way:
 
         /usr/bin/ansible-playbooks /etc/ansible/playbooks/site.yml --tags=motd
 
-### Conditional Execution
+## Conditional Execution
 You may also want to skip tasks based on some criteria, this is done with the `when` parameter.
 
           - name: template the file /foo.txt
             template: src=foo.j2 dest=/foo.txt owner=root group=wheel mode=0644
             when: ansible_hostname == "foo.example.com"
 
-The above task will only run on the host foo.example.com. 
+The above task will only run on the host `foo.example.com`. 
 
-### Loops
+## Loops
 You can also loop over items in a single task.
 Some modules (such as `yum` and `apt`) can also do smart grouping with a list of items.
 
@@ -503,15 +504,15 @@ Some modules (such as `yum` and `apt`) can also do smart grouping with a list of
 # Graduate-Level Study
 Ansible has more advanced features which are a bit out of the scope of this article.
 
-### Ansible Roles
+## Ansible Roles
 Ansible roles are used for organization and code-reuse.
 They allow for a more modular and easier to read playbook.
 
-### Accelerated Mode and Asynchronous Mode
+## Accelerated Mode and Asynchronous Mode
 SSH connections do add some overhead.
 To properly scale to a large number of hosts, Ansible has a "Accelerated Mode" which starts a transient daemon for a lighter-weight communication channel.
 
-### Other Features
+## Other Features
 - Python API
 
   You can use the provided Python API to add Ansible features into your own projects.
@@ -526,7 +527,6 @@ To properly scale to a large number of hosts, Ansible has a "Accelerated Mode" w
 - Callbacks
 
   Callbacks allow for custom logging or notifications for tasks
-
 
 - Connection Plugins
 
