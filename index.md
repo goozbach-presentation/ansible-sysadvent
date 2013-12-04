@@ -456,24 +456,84 @@ To run the same site-wide playbook against the development environment you would
 
         /usr/bin/ansible-playbook -i /etc/ansible/hosts-dev /etc/ansible/playbooks/site.yml
 
-# intermediate playbooks
-### tags
-### conditionals
-### loops
+# Advanced Playbook Syntax
+There are some advanced syntax options for tasks which allow for better control and administration
+### Tags
+Tags allow for selective execution of tasks.
 
-# Advanced playbooks
-### roles
-    - used for organization, or code re-use
-### accelerated mode
+        tasks:
+          - name: template apache config
+            template: src=httpd.conf.j2 dest=/etc/httpd/conf/httpd.conf
+            tags:
+              - templates
+              - apache
+            notify:
+              - restart apache
+         
+          - name: template the file /etc/motd
+            template: src=motd.j2 dest=/etc/motd owner=root group=wheel mode=0644
+            tags:
+              - motd
 
-# graduate-level study
-### Python API
-### Creating your own module
-    - anything works as long as it speaks JSON
-    - using python you get to cheat
-### callbacks
-### other plugins
-    - connection
-    - lookup
-    - vars
-    - filter
+To run just the motd tasks you would run `ansible-playbook` this way:
+
+        /usr/bin/ansible-playbooks /etc/ansible/playbooks/site.yml --tags=motd
+
+### Conditional Execution
+You may also want to skip tasks based on some criteria, this is done with the `when` parameter.
+
+          - name: template the file /foo.txt
+            template: src=foo.j2 dest=/foo.txt owner=root group=wheel mode=0644
+            when: ansible_hostname == "foo.example.com"
+
+The above task will only run on the host foo.example.com. 
+
+### Loops
+You can also loop over items in a single task.
+Some modules (such as `yum` and `apt`) can also do smart grouping with a list of items.
+
+        - name: install packages loop
+          yum: name={{ item }} state=present
+          with_items:
+            - vim-enhanced
+            - screen
+            - nano
+            - mlocate
+
+# Graduate-Level Study
+Ansible has more advanced features which are a bit out of the scope of this article.
+
+### Ansible Roles
+Ansible roles are used for orginisation and code-reuse.
+They allow for a more modular and easier to read playbook.
+
+### Accelerated Mode and Asynchronous Mode
+SSH connections do add some overhead.
+To properly scale to a large number of hosts, Ansible has a "Accelerated Mode" which starts a transient daemon for a lighter-weight communication channel.
+
+### Other Features
+- Python API
+
+  You can use the provided Python API to add Ansible features into your own projects.
+
+- Custom Modules
+
+  Ansible modules can be written in any language.
+  They only need to be able to output JSON.
+
+  If you use Python however, there are some shortcuts you can use to get some basic features.
+
+- Callbacks
+
+  Callbacks allow for custom logging or notifications for tasks
+
+
+- Connection Plugins
+
+  Connection plugins allow for custom communication channels.
+
+# In Closing
+Ansible's power and ease of use makes it a good canidate for your environment without the overhead or complexity of other tools.
+Also because of the extensiblity of the system it can be placed in the workflow which best fits your requirements.
+
+Spend a few minutes and give Ansible a shot.
