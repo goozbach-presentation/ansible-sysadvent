@@ -329,7 +329,7 @@ You will see some output like this:
 
 
 Now that we have this good start, let's add a bit of complexity by creating and using some variables.
-Ansible variables come from a myriad of sources (from highest presidence to lowest):
+Ansible variables come from a myriad of sources (from highest precedence to lowest):
 
 - "Facts" derived from the `setup` module.
 - Passed from the command line using the `-e` switch. (these variables always win)
@@ -355,14 +355,14 @@ To use a variable in a playbook or a template use this syntax:
               
 This task would allow you to define the name of the apache service based on the system or group.
 
-# Ansible Workflows 
+# Ansible Work flows 
 You now know enough about the format of the Ansible playbooks to start using Ansible in earnest.
-As mentioned before, Ansible is a pretty flexible tool and can be used in many different workflows.
+As mentioned before, Ansible is a pretty flexible tool and can be used in many different work flows.
 And of course, the modules and tasks you'd use for each can overlap.
 
-## Common Configuration Managment Tasks
-Ansible can be used in a configuration managment workflow.
-Some of the common tasks done in this workflow include:
+## Common Configuration Management Tasks
+Ansible can be used in a configuration management work flow.
+Some of the common tasks done in this work flow include:
 
 ### Create a user account:
 
@@ -394,7 +394,7 @@ Some of the common tasks done in this workflow include:
   [Additional `service` documentation](http://www.ansibleworks.com/docs/modules.html#service)
 
 ### Creating a file from a template
-  There are two halfs of a template, the task and the template itself.
+  There are two steps to of a template, the task and the template itself.
   The task looks like this:
 
         - name: template the file /etc/motd
@@ -424,9 +424,9 @@ Some of the common tasks done in this workflow include:
 
   Notice, you define any module as you would with a normal task.
 
-## Orchistration workflow
-Ansible can also use some features to do normal orchistration tasks such as deploying code from [Git](http://www.ansibleworks.com/docs/modules.html#git).
-The real power however, comes from the ability to delgate a single task to a different server.
+## Orchestration work flow
+Ansible can also use some features to do normal orchestration tasks such as deploying code from [Git](http://www.ansibleworks.com/docs/modules.html#git).
+The real power however, comes from the ability to delegate a single task to a different server.
 
 A good example is removing a server from a load balancer prior to deploying code:
 
@@ -444,8 +444,8 @@ A good example is removing a server from a load balancer prior to deploying code
             shell: /usr/local/bin/add_host {{ ansible_hostname }}
             delegate_to: loadbalancer.example.com
 
-## Continous Integration Workflow
-Using Ansible as part of a contiuous integration system is a powerful workflow.
+## Continuous Integration Work flow
+Using Ansible as part of a continuous integration system is a powerful work flow.
 Ansible can easily use the same playbooks against different environments by simply changing the inventory source.
 
 To run a site-wide playbook against production you would use the default command syntax:
@@ -504,7 +504,7 @@ Some modules (such as `yum` and `apt`) can also do smart grouping with a list of
 Ansible has more advanced features which are a bit out of the scope of this article.
 
 ### Ansible Roles
-Ansible roles are used for orginisation and code-reuse.
+Ansible roles are used for organization and code-reuse.
 They allow for a more modular and easier to read playbook.
 
 ### Accelerated Mode and Asynchronous Mode
@@ -533,7 +533,7 @@ To properly scale to a large number of hosts, Ansible has a "Accelerated Mode" w
   Connection plugins allow for custom communication channels.
 
 # In Closing
-Ansible's power and ease of use makes it a good canidate for your environment without the overhead or complexity of other tools.
-Also because of the extensiblity of the system it can be placed in the workflow which best fits your requirements.
+Ansible's power and ease of use makes it a good candidate for your environment without the overhead or complexity of other tools.
+Also because of the extensible nature of the system it can be placed in the work flow which best fits your requirements.
 
 Spend a few minutes and give Ansible a shot.
