@@ -1,0 +1,6 @@
+---
+- hosts: all
+  remote_user: root
+  tasks:
+    - name: keep vim-enhanced package up to date
+      yum: name=vim-enhanced state=latest

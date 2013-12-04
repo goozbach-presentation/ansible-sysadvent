@@ -25,7 +25,7 @@ Out of the box, Ansible has the following uses:
     - Run Tests
     - Promote software to production if tests pass
 
-Ansible is agent less.
+Ansible is agentless.
 It uses the (most likely already running) ssh server on the target.
 This access uses either the Python library `paramiko` (the default) or the stock `openssh` clients.
 
@@ -331,14 +331,16 @@ You will see some output like this:
 Now that we have this good start, let's add a bit of complexity by creating and using some variables.
 Ansible variables come from a myriad of sources (from highest presidence to lowest):
 
+- "Facts" derived from the `setup` module.
 - Passed from the command line using the `-e` switch. (these variables always win)
-- Host variables. (from `/etc/ansible/host_vars/<HOSTNAME>`)
+- Set in playbook.
 - Role variables. (More on roles later)
+- Variables passed from inventory.
+- Host variables. (from `/etc/ansible/host_vars/<HOSTNAME>`)
 - Group variables. (from `/etc/ansible/group_vars/<GROUPNAME>`)
 - Site default variables. ( from `/etc/ansible/group_vars/all`)
-- Variables passed from inventory. 
 - Role "default" variables.
-- "Facts" derived from the `setup` module.
+
 
 Variable files are defined in YAML files as well.
 The contents of `/etc/ansible/group_vars/all` could look something like this:
@@ -358,37 +360,119 @@ You now know enough about the format of the Ansible playbooks to start using Ans
 As mentioned before, Ansible is a pretty flexible tool and can be used in many different workflows.
 And of course, the modules and tasks you'd use for each can overlap.
 
-## common or configuration management tasks
-- Create a user 
-- install a package
-- enable a service
-- template a file
-- dynamic variables aka "facts"
-- "handlers"
+## Common Configuration Managment Tasks
+Ansible can be used in a configuration managment workflow.
+Some of the common tasks done in this workflow include:
 
-## application deployment tasks
-- git deploy
-- delegation
-## continuous deployment tasks
-- change inventory source
+### Create a user account:
+
+        - name: create foo user
+          user: name=foo state=present password=<SALTED_HASH>
+
+  More options for the `user` module are found in its [documentation](http://www.ansibleworks.com/docs/modules.html#user)
+      
+### install a package
+
+        - name: install foo package
+          yum: name=foo state=latest
+          
+  or
+  
+        - name: install foo package via `apt`
+          apt: name=foo state=installed
+          
+  There are additional [packaging modules](http://www.ansibleworks.com/docs/modules.html#packaging) as well.
+
+### Enable and start a service
+
+        - name: enable foo service
+          service: name=foo enabled=yes
+        
+        - name: start foo service
+          service: name=foo state=started
+
+  [Additional `service` documentation](http://www.ansibleworks.com/docs/modules.html#service)
+
+### Creating a file from a template
+  There are two halfs of a template, the task and the template itself.
+  The task looks like this:
+
+        - name: template the file /etc/motd
+          template: src=motd.j2 dest=/etc/motd owner=root group=wheel mode=0644
+
+   The [`template` module](http://www.ansibleworks.com/docs/modules.html#template) gets most of its arguments from the [`file` module](http://www.ansibleworks.com/docs/modules.html#file)
+
+   The template file syntax is [Jinja2](http://jinja.pocoo.org/docs/templates/) and a simple template for the motd task above would look like this:
+
+        Welcome to host: {{ ansible_hostname }}
+        Please be kind
+
+### Running tasks on changes
+  When you want to run a task when a template file changes or another task creates a change you use a `handler`:
+
+        tasks:
+          - name: template apache config
+            template: src=httpd.conf.j2 dest=/etc/httpd/conf/httpd.conf
+            notify:
+              - restart apache
+
+  You then create a handler in the playbook:
+
+        handlers:
+          - name: restart apache
+            service: name=httpd state=restarted
+
+  Notice, you define any module as you would with a normal task.
+
+## Orchistration workflow
+Ansible can also use some features to do normal orchistration tasks such as deploying code from [Git](http://www.ansibleworks.com/docs/modules.html#git).
+The real power however, comes from the ability to delgate a single task to a different server.
+
+A good example is removing a server from a load balancer prior to deploying code:
+
+        tasks:
+          - name: remove host from LB
+            shell: /usr/local/bin/remove_host {{ ansible_hostname }}
+            delegate_to: loadbalancer.example.com
+
+          - name: deploy code
+            git: repo=http://git.example.com/project/foo.git dest=/var/www/html/
+            notify:
+              - restart apache
+
+          - name: add host to LB
+            shell: /usr/local/bin/add_host {{ ansible_hostname }}
+            delegate_to: loadbalancer.example.com
+
+## Continous Integration Workflow
+Using Ansible as part of a contiuous integration system is a powerful workflow.
+Ansible can easily use the same playbooks against different environments by simply changing the inventory source.
+
+To run a site-wide playbook against production you would use the default command syntax:
+
+        /usr/bin/ansible-playbook /etc/ansible/playbooks/site.yml
+
+To run the same site-wide playbook against the development environment you would change the hosts file using the `-i` switch:
+
+        /usr/bin/ansible-playbook -i /etc/ansible/hosts-dev /etc/ansible/playbooks/site.yml
 
 # intermediate playbooks
-- tags
-- conditionals
-- loops
+### tags
+### conditionals
+### loops
 
 # Advanced playbooks
-- roles
+### roles
     - used for organization, or code re-use
-- accelerated mode
+### accelerated mode
 
 # graduate-level study
-- Python API
-- Creating your own module
+### Python API
+### Creating your own module
     - anything works as long as it speaks JSON
     - using python you get to cheat
-- callbacks
-- other plugins
+### callbacks
+### other plugins
     - connection
     - lookup
     - vars
