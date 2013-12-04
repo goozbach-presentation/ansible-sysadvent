@@ -9,9 +9,9 @@ subfooter: http://presentation.goozbach.com/
 ## What is Ansible?
 Ansible is most easily described by calling it a "configuration management tool", but it is so much more.
 
-Written in Python, with an easy to modify architecture, Ansible is built to do more than the common "configuration management" tasks.
+Ansible, written in Python, has an easy to modify architecture, built to do more than the common "configuration management" tasks, and is highly extensible.
 
-Out of the box, Ansible can be used to:
+Out of the box, Ansible has the following uses:
 - Do your normal configuration management tasks:
     - Create system files via templates
     - Manage software installation using `yum`, `apt`, `gem`, or the like.
@@ -27,7 +27,7 @@ Out of the box, Ansible can be used to:
 
 Ansible is agent less.
 It uses the (most likely already running) ssh server on the target.
-This access uses either the Python library `paramiko` (the default) or the stock `OpenSSH` clients.
+This access uses either the Python library `paramiko` (the default) or the stock `openssh` clients.
 
 An optional connection method is the "Accelerated Mode", which uses an ssh connection to initialize a ZeroMQ connection.
 
@@ -44,7 +44,7 @@ An Ansible __"Module"__ is most often a Python script, but it can be anything wh
 
 # Getting Started
 ## Prerequisites
-The only things that a system needs to be managed via Ansible is the `python-simplejson` package, and a running OpenSSH server.
+The only things that a system needs as an Ansible node is the `python-simplejson` package, and a running OpenSSH server.
 Of course, if you properly setup ssh key-based authentication Ansible access becomes easier.
 Making sure you have proper DNS or host file setup is another way to make Ansible management easier.
 
@@ -52,7 +52,7 @@ Making sure you have proper DNS or host file setup is another way to make Ansibl
 After verifying that SSH access has properly been setup the first step is to create an inventory source.
 
 The default inventory source is the file `/etc/ansible/hosts`, and is in the INI-file format.
-Groups are created using the INI group header syntax `[groupname]'.
+Groups use the INI group header syntax `[groupname]'.
 
 A simple `host` file example:
 
@@ -99,7 +99,7 @@ Notice that it matches all hosts regardless of the group.
 When using the command `/usr/bin/ansible` you are operating Ansible in "Ad-Hoc" mode.
 This is how you run "one-off" modules or commands against Ansible nodes.
 
-One of the more useful things to run in ad-hoc mode is the `setup` module, which shows you the dynamically created variables which can be used in playbooks.
+One of the more useful things to run in ad-hoc mode is the `setup` module, which shows you the dynamically created variables which for use in playbooks.
 
 This is what the setup module output looks like:
 
@@ -309,7 +309,7 @@ Ansible playbooks are simple YAML syntax files which look something like this:
             - name: keep vim-enhanced package up to date
               yum: name=vim-enhanced state=latest
 
-This defines which hosts the playbook will attempt to configure, the remote user which will be used for SSH, and makes sure that the package `vim-enhanced` is the latest version using the `yum` Ansible module.
+This defines which hosts the playbook will attempt to configure the remote user, used for SSH, and makes sure the package `vim-enhanced` is the latest version using the `yum` Ansible module.
 You would use this playbook by putting it in a file (lets say `/etc/ansible/playbooks/vim.yml`), and applying or running the playbook by using the command:
 
         /usr/bin/ansible-playbook /etc/ansible/playbooks/vim.yml
@@ -329,27 +329,43 @@ You will see some output like this:
 
 
 Now that we have this good start, let's add a bit of complexity by creating and using some variables.
-Ansible variables come from a myriad of sources (from highest precedence to lowest):
+Ansible variables come from a myriad of sources (from highest presidence to lowest):
 
 - Passed from the command line using the `-e` switch. (these variables always win)
+- Host variables. (from `/etc/ansible/host_vars/<HOSTNAME>`)
 - Role variables. (More on roles later)
-- Host variables. (from `host_vars/<HOSTNAME>`)
-- Group variables. (from `group_vars/<GROUPNAME>`)
-- Site default variables. ( from `group_vars/all`)
+- Group variables. (from `/etc/ansible/group_vars/<GROUPNAME>`)
+- Site default variables. ( from `/etc/ansible/group_vars/all`)
 - Variables passed from inventory. 
 - Role "default" variables.
 - "Facts" derived from the `setup` module.
 
-# Ansible Tasks
-Although some tasks are more suited to a single type of usage they have quite a bit of overlap
+Variable files are defined in YAML files as well.
+The contents of `/etc/ansible/group_vars/all` could look something like this:
+
+        ---
+        apache_service: httpd
+        
+To use a variable in a playbook or a template use this syntax:
+
+            - name: restart apache service
+              service: name={{ apache_service }} state=restarted
+              
+This task would allow you to define the name of the apache service based on the system or group.
+
+# Ansible Workflows 
+You now know enough about the format of the Ansible playbooks to start using Ansible in earnest.
+As mentioned before, Ansible is a pretty flexible tool and can be used in many different workflows.
+And of course, the modules and tasks you'd use for each can overlap.
 
 ## common or configuration management tasks
-- Create a user
+- Create a user 
 - install a package
 - enable a service
 - template a file
 - dynamic variables aka "facts"
 - "handlers"
+
 ## application deployment tasks
 - git deploy
 - delegation
@@ -363,7 +379,7 @@ Although some tasks are more suited to a single type of usage they have quite a 
 
 # Advanced playbooks
 - roles
-    - used mostly for organization, but can be used for extensible
+    - used for organization, or code re-use
 - accelerated mode
 
 # graduate-level study
