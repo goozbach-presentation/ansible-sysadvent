@@ -298,10 +298,47 @@ web1.example.com | success >> {
 }
 </pre></code>
 
-# Your first playbook
-- Create a simple playbook to install a package
-    - `vim-enhanced`
-- introduction to variables
+# Ansible Playbooks
+The other method of running Ansible is by creating a playbook.
+Ansible playbooks are simple YAML syntax files which look something like this:
+
+        ---
+        - hosts: all
+          remote_user: root
+          tasks:
+            - name: keep vim-enhanced package up to date
+              yum: name=vim-enhanced state=latest
+
+This defines which hosts the playbook will attempt to configure, the remote user which will be used for SSH, and makes sure that the package `vim-enhanced` is the latest version using the `yum` Ansible module.
+You would use this playbook by putting it in a file (lets say `/etc/ansible/playbooks/vim.yml`), and applying or running the playbook by using the command:
+
+        /usr/bin/ansible-playbook /etc/ansible/playbooks/vim.yml
+
+You will see some output like this:
+
+        PLAY [all] ******************************************************************** 
+        
+        GATHERING FACTS *************************************************************** 
+        ok: [foo.example.com]
+        
+        TASK: [keep vim-enhanced package up to date] ********************************** 
+        ok: [foo.example.com]
+
+        PLAY RECAP ******************************************************************** 
+        foo.example.com                : ok=2    changed=0    unreachable=0    failed=0
+
+
+Now that we have this good start, let's add a bit of complexity by creating and using some variables.
+Ansible variables come from a myriad of sources (from highest presidence to lowest):
+
+- Passed from the command line using the `-e` switch. (these variables always win)
+- Role variables. (More on roles later)
+- Host variables. (from `host_vars/<HOSTNAME>`)
+- Group variables. (from `group_vars/<GROUPNAME>`)
+- Site default variables. ( from `group_vars/all`)
+- Variables passed from inventory. 
+- Role "default" variables.
+- "Facts" derived from the `setup` module.
 
 # Ansible Tasks
 Although some tasks are more suited to a single type of usage they have quite a bit of overlap
