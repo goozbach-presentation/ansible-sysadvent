@@ -27,7 +27,7 @@ Out of the box, Ansible can be used to:
 
 Ansible is agent less.
 It uses the (most likely already running) ssh server on the target.
-This access uses either the Python library `paramiko` (the default) or the stock `openssh` clients.
+This access uses either the Python library `paramiko` (the default) or the stock `OpenSSH` clients.
 
 An optional connection method is the "Accelerated Mode", which uses an ssh connection to initialize a ZeroMQ connection.
 
@@ -329,7 +329,7 @@ You will see some output like this:
 
 
 Now that we have this good start, let's add a bit of complexity by creating and using some variables.
-Ansible variables come from a myriad of sources (from highest presidence to lowest):
+Ansible variables come from a myriad of sources (from highest precedence to lowest):
 
 - Passed from the command line using the `-e` switch. (these variables always win)
 - Role variables. (More on roles later)
